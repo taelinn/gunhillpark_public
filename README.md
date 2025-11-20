@@ -9,12 +9,14 @@ Physical media experience for digital music using RFID cards as "cartridges" for
 - **Hardware**: ESP32 + PN532 NFC/RFID reader
 - **Features**: Scan RFID cards to play specific albums/playlists through Home Assistant
 - **Use Case**: Kid-friendly music player, vinyl-like experience for digital music
+- **Credit**: Based on [TheStockPot's RFID Jukebox](https://github.com/TheStockPot/RFID-Jukebox)
 
 ### 🌡️ [Air Quality Sensor (SEN66)](./air-quality-sen66/)
 Comprehensive air quality monitoring with PM, CO2, temperature, humidity, VOC, and NOx.
 - **Hardware**: Adafruit QT Py ESP32-S3 + Sensirion SEN66
 - **Features**: PM1.0/2.5/4.0/10, CO2, temp/humidity, VOC/NOx, status LED, web interface
 - **Use Case**: Indoor air quality monitoring, automation triggers
+- **Credit**: Based on [uELKO's Air Quality Monitor](https://github.com/uELKO/ESPHome-Air-Quality-Monitor)
 
 ### 📡 [Bluetooth Proxy](./bluetooth-proxy/)
 Extend Home Assistant's Bluetooth reach throughout your home.
@@ -83,9 +85,21 @@ Feel free to open issues or PRs for improvements. If you've adapted these config
 
 ## Credits
 
-- SEN66 support via [uELKO's external components](https://github.com/uELKO/esphome_external_components)
-- ESPHome community for inspiration and examples
+- **RFID Media Player**: Based on the excellent [RFID Jukebox by TheStockPot](https://github.com/TheStockPot/RFID-Jukebox)
+- **Air Quality Monitor**: Based on [uELKO's ESPHome Air Quality Monitor](https://github.com/uELKO/ESPHome-Air-Quality-Monitor) and their [external components](https://github.com/uELKO/esphome_external_components) for SEN6x support
+- **Community**: ESPHome and Home Assistant communities for inspiration and support
 
 ## License
 
 MIT License - See [LICENSE](LICENSE) file for details
+
+## Support
+
+If you find these configurations helpful, please give the repository a star! If you encounter issues:
+1. Check the individual project README files for troubleshooting
+2. Open an issue with your hardware details and error logs
+3. Consider contributing your fixes back to help others
+
+## Disclaimer
+
+These configurations are provided as-is. Always review configurations before deploying to your devices, especially in production environments.
