@@ -101,21 +101,40 @@ sensor:
 
 text_sensor:
   - platform: template
-    name: "Air Quality Level"
+    name: "Air Quality"
+    id: air_quality
     icon: "mdi:air-filter"
     lambda: |-
-      if (id(sen66_pm25).state < 12.0) {
-        return {"Good"};
-      } else if (id(sen66_pm25).state < 35.4) {
+      float pm1 = id(sen66_pm10).state;  // PM1.0 - most harmful
+      float pm25 = id(sen66_pm25).state; // PM2.5 - standard measure
+      float voc = id(sen66_voc).state;   // VOCs - chemicals
+      
+      // Focus on what the purifier can actually filter
+      // Ignore CO2 since that needs ventilation, not filtering
+      
+      // Critical - turn on immediately
+      if (pm1 > 20.0 || pm25 > 25.0 || voc > 200) {
+        return {"Critical"};
+      }
+      // Poor - should turn on purifier
+      else if (pm1 > 10.0 || pm25 > 12.0 || voc > 150) {
+        return {"Poor"};
+      }
+      // Moderate - consider turning on
+      else if (pm1 > 5.0 || pm25 > 8.0 || voc > 100) {
         return {"Moderate"};
-      } else if (id(sen66_pm25).state < 55.4) {
-        return {"Unhealthy for Sensitive"};
-      } else if (id(sen66_pm25).state < 150.4) {
-        return {"Unhealthy"};
-      } else {
-        return {"Very Unhealthy"};
+      }
+      // Good - can turn off purifier
+      else if (pm1 > 3.0 || pm25 > 5.0 || voc > 50) {
+        return {"Good"};
+      }
+      // Excellent - definitely off
+      else {
+        return {"Excellent"};
       }
     update_interval: 30s
+    filters:
+      - throttle: 30s  // Prevent too frequent updates
 
   - platform: template
     name: "CO2 Level"
