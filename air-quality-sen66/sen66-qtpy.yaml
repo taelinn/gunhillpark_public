@@ -1,8 +1,16 @@
-# SEN66 Air Quality Sensor Configuration
-# Hardware: Adafruit QT Py ESP32-S3 + Adafruit SEN66 breakout
-# Connection: STEMMA QT cable
+# SEN66 Air Quality Sensor for Adafruit QT Py ESP32-S3
 # Based on uELKO's ESPHome Air Quality Monitor
+# https://github.com/taelinn/gunhillpark_public
 
+esphome:
+  name: air-quality
+  friendly_name: Air Quality
+  name_add_mac_suffix: true
+  project:
+    name: "taelinn.sen66-air-quality"
+    version: "1.0.0"
+
+# External component required for SEN6x support
 external_components:
   - source:
       type: git
@@ -10,16 +18,39 @@ external_components:
       ref: rework
     components: sen6x
 
+# ESP32-S3 configuration
+# Uses generic board for initial flash compatibility
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  framework:
+    type: esp-idf
+    version: recommended
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
+  ap:
+    ssid: "AirQuality-Fallback"
+    password: "ChangeMe123"
+
+captive_portal:
+
 web_server:
   port: 80
-  auth:
-    username: !secret web_username
-    password: !secret web_password  # Optional - remove auth section for no password
 
-
+# I2C Configuration - QT Py STEMMA QT uses GPIO41/40!
 i2c:
-  sda: GPIO41  # QT Py STEMMA QT pins (NOT GPIO5/6!)
-  scl: GPIO40
+  sda: GPIO41  # NOT GPIO5!
+  scl: GPIO40  # NOT GPIO6!
   scan: true
   id: bus_a
 
@@ -117,10 +148,11 @@ button:
     name: "Restart"
     entity_category: diagnostic
 
+# Status LED - QT Py onboard NeoPixel
 light:
   - platform: esp32_rmt_led_strip
     rgb_order: GRB
-    pin: GPIO39  # QT Py onboard NeoPixel
+    pin: GPIO39
     num_leds: 1
     rmt_channel: 0
     chipset: WS2812
@@ -129,9 +161,8 @@ light:
     effects:
       - pulse:
           name: "Breathing"
-          transition_length: 1s
-          update_interval: 2s
 
+# Automatic LED color based on air quality
 interval:
   - interval: 30s
     then:
@@ -141,15 +172,15 @@ interval:
             auto call = id(status_led).turn_on();
             
             if (pm25 < 12.0) {
-              call.set_rgb(0.0, 1.0, 0.0);  // Green - Good
+              call.set_rgb(0.0, 1.0, 0.0);  // Green
             } else if (pm25 < 35.4) {
-              call.set_rgb(1.0, 1.0, 0.0);  // Yellow - Moderate
+              call.set_rgb(1.0, 1.0, 0.0);  // Yellow
             } else if (pm25 < 55.4) {
-              call.set_rgb(1.0, 0.5, 0.0);  // Orange - Unhealthy for sensitive
+              call.set_rgb(1.0, 0.5, 0.0);  // Orange
             } else if (pm25 < 150.4) {
-              call.set_rgb(1.0, 0.0, 0.0);  // Red - Unhealthy
+              call.set_rgb(1.0, 0.0, 0.0);  // Red
             } else {
-              call.set_rgb(0.5, 0.0, 0.5);  // Purple - Very unhealthy
+              call.set_rgb(0.5, 0.0, 0.5);  // Purple
             }
             call.set_brightness(0.2);
             call.set_effect("Breathing");
