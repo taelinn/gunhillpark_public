@@ -1,0 +1,23 @@
+# SEN66 Air Quality Sensor - Device Configuration
+# Copy this file to your ESPHome folder and flash to your device
+# Each device will get a unique name automatically
+
+packages:
+  sen66:
+    url: https://github.com/taelinn/gunhillpark_public
+    ref: main
+    files: [air-quality-sen66/sen66-base.yaml]
+
+esphome:
+  name: aq-sensor
+  friendly_name: AQ Sensor
+  name_add_mac_suffix: true  # Automatic unique naming
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "AirQuality-Fallback"
+    password: "ChangeMe123"
