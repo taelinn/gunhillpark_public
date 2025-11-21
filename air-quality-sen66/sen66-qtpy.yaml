@@ -8,7 +8,7 @@ esphome:
   name_add_mac_suffix: true
   project:
     name: "taelinn.sen66-air-quality"
-    version: "1.0.0"
+    version: "1.0.1"
 
 # External component required for SEN6x support
 external_components:
