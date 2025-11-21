@@ -1,6 +1,6 @@
 # SEN66 Air Quality Sensor - Device Configuration
-# Copy this file to your ESPHome folder and flash to your device
-# Each device will get a unique name automatically
+# Works for both initial flash AND subsequent updates
+# No commenting/uncommenting needed!
 
 packages:
   sen66:
@@ -9,15 +9,28 @@ packages:
     files: [air-quality-sen66/sen66-base.yaml]
 
 esphome:
-  name: aq-sensor
-  friendly_name: AQ Sensor
-  name_add_mac_suffix: true  # Automatic unique naming
+  name: air-quality
+  friendly_name: Air Quality
+  name_add_mac_suffix: true
+
+# These work for initial flash when packages might fail
+esp32:
+  board: esp32-s3-devkitc-1  # Generic S3 board works for initial flash
+  variant: esp32s3
+  framework:
+    type: arduino  # Arduino for first flash, will be overridden by package
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   
-  # Enable fallback hotspot in case wifi connection fails
   ap:
     ssid: "AirQuality-Fallback"
     password: "ChangeMe123"
